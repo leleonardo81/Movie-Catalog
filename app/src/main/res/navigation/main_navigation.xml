@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/home_page">
+
+    <fragment
+        android:id="@+id/home_page"
+        android:name="com.bangkit.moviecatalog.ui.main.TabLayoutFragment"
+        android:label="fragment_tab_layout"
+        tools:layout="@layout/fragment_tab_layout" >
+        <argument
+            android:name="isFavoritePage"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_home_page_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favorite_page"
+        android:name="com.bangkit.moviecatalog.ui.main.TabLayoutFragment"
+        android:label="fragment_tab_layout"
+        tools:layout="@layout/fragment_tab_layout" >
+        <argument
+            android:name="isFavoritePage"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_favorite_page_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailActivity"
+        android:name="com.bangkit.moviecatalog.ui.detail.DetailActivity"
+        android:label="detail_activity"
+        tools:layout="@layout/detail_activity" />
+
+</navigation>

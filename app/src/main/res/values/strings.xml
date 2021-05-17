@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Movie Catalog</string>
+    <string name="tab_text_1">Movies</string>
+    <string name="tab_text_2">TV Shows</string>
+    <string name="type_tv">tv</string>
+    <string name="type_movie">movie</string>
+    <string name="rating">Rating:</string>
+    <string name="overview">Overview</string>
+    <string name="tab_movie_id">tab_movie</string>
+    <string name="tab_tv_id">tab_tv</string>
+    <string name="set_favorite">Set Favorite</string>
+    <string name="all">All</string>
+    <string name="favorite">Favorites</string>
+    <string name="retry">Retry</string>
+</resources>
