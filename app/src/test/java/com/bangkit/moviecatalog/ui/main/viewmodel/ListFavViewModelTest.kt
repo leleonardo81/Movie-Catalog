@@ -31,16 +31,15 @@ class ListFavViewModelTest {
     @Before
     fun setUp() {
         viewModel = ListFavViewModel(dataRepository)
-
     }
 
     @Test
     fun fetchMovie() {
-        val type = "tv"
+        val type = "movie"
         runBlocking {
-            Mockito.`when`(dataRepository.getAll(type)).thenReturn(dataFlow)
+            Mockito.`when`(dataRepository.getFavorites(type)).thenReturn(dataFlow)
             viewModel.fetchMovie(type).firstOrNull()
-            Mockito.verify(dataRepository).getAll(type)
+            Mockito.verify(dataRepository).getFavorites(type)
         }
     }
 }

@@ -103,6 +103,7 @@ class MainActivityTest {
         onView(withId(R.id.movie_title)).check(matches(isDisplayed()))
         onView(withId(R.id.movie_desc)).check(matches(isDisplayed()))
         onView(withId(R.id.movie_rating)).check(matches(isDisplayed()))
+        onView(withId(R.id.set_favorite_menu)).check(matches(isDisplayed()))
         onView(isRoot()).perform(pressBack())
     }
 
@@ -114,7 +115,38 @@ class MainActivityTest {
         onView(withId(R.id.movie_title)).check(matches(isDisplayed()))
         onView(withId(R.id.movie_desc)).check(matches(isDisplayed()))
         onView(withId(R.id.movie_rating)).check(matches(isDisplayed()))
+        onView(withId(R.id.set_favorite_menu)).check(matches(isDisplayed()))
         onView(isRoot()).perform(pressBack())
+    }
+
+    @Test
+    fun displayFavoriteMovieList() {
+        onView(withId(R.string.tab_movie_id)).perform(click())
+        onView(withId(R.id.rv_list_item)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
+        onView(withId(R.id.set_favorite_menu)).check(matches(isDisplayed()))
+        onView(withId(R.id.set_favorite_menu)).perform(click())
+        onView(isRoot()).perform(pressBack())
+
+        onView(withId(R.id.favorite_page)).perform(click())
+        onView(withId(R.string.tab_movie_id)).check(matches(isDisplayed()))
+        onView(withId(R.string.tab_movie_id)).perform(click())
+        onView(withId(R.id.rv_list_item)).check(matches(isDisplayed()))
+        onView(withId(R.id.rv_list_item)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(defaultListSize))
+    }
+
+    @Test
+    fun displayFavoriteTvShowList() {
+        onView(withId(R.string.tab_tv_id)).perform(click())
+        onView(withId(R.id.rv_list_item)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
+        onView(withId(R.id.set_favorite_menu)).check(matches(isDisplayed()))
+        onView(withId(R.id.set_favorite_menu)).perform(click())
+        onView(isRoot()).perform(pressBack())
+
+        onView(withId(R.id.favorite_page)).perform(click())
+        onView(withId(R.string.tab_tv_id)).check(matches(isDisplayed()))
+        onView(withId(R.string.tab_tv_id)).perform(click())
+        onView(withId(R.id.rv_list_item)).check(matches(isDisplayed()))
+        onView(withId(R.id.rv_list_item)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(defaultListSize))
     }
 
 }
