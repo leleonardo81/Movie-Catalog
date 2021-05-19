@@ -1,6 +1,5 @@
 package com.bangkit.moviecatalog.ui.main.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -11,14 +10,21 @@ import kotlinx.coroutines.flow.Flow
 
 class ListFavViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
-    val loading = MutableLiveData(false)
-
-    fun setLoading(state: Boolean) {
-        loading.postValue(state)
-    }
+    private var currentResultMovie: Flow<PagingData<MovieModel>>? = null
+    private var currentResultTv: Flow<PagingData<MovieModel>>? = null
 
     fun fetchMovie(type: String) : Flow<PagingData<MovieModel>> {
-        setLoading(true)
-        return dataRepository.getFavorites(type).cachedIn(viewModelScope)
+        val lastResult = if(type=="tv") currentResultTv else currentResultMovie
+        if (lastResult != null) {
+            return lastResult
+        }
+
+        val newResult = dataRepository.getFavorites(type).cachedIn(viewModelScope)
+
+        when (type) {
+            "tv" -> currentResultTv = newResult
+            "movie" -> currentResultMovie = newResult
+        }
+        return newResult
     }
 }

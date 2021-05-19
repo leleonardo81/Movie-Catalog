@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit.moviecatalog.R
@@ -24,11 +25,14 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var listViewModel: ListFavViewModel
     private lateinit var binding: FragmentMainBinding
+    private val listAdapter = ListAdapter()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        listViewModel = ViewModelProvider(this,
+        listViewModel = ViewModelProvider(requireActivity(),
             ViewModelFactory.getInstance(requireActivity()))[ListFavViewModel::class.java]
+
     }
 
     override fun onCreateView(
@@ -42,35 +46,36 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (activity!=null) {
-            val listAdapter = ListAdapter()
-            val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            val decoration = DividerItemDecoration(binding.rvListItem.context, DividerItemDecoration.VERTICAL)
             binding.rvListItem.apply {
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = LinearLayoutManager(requireContext())
                 addItemDecoration(decoration)
                 adapter = listAdapter
             }
-
-            listViewModel.loading.observe(viewLifecycleOwner, {
-                binding.progressBar.visibility = when (it) {
-                    true -> View.VISIBLE
-                    false -> View.GONE
+            listAdapter.addLoadStateListener { loadState ->
+                // Only show the list if refresh succeeds.
+                when (loadState.mediator?.refresh) {
+                    is LoadState.NotLoading -> {
+                        binding.rvListItem.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is LoadState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.rvListItem.visibility = View.GONE
+                    }
                 }
-            })
+            }
 
             viewLifecycleOwner.lifecycleScope.launch {
                 listViewModel.fetchMovie(arguments?.getString(ARG_SECTION_TYPE) ?: resources.getString(R.string.type_movie))
                     .collectLatest {
-                        listViewModel.setLoading(false)
                         listAdapter.submitData(it)
                     }
             }
-//                .observe(viewLifecycleOwner, {
-//                    listViewModel.setLoading(false)
-//                    listAdapter.submitData(lifecycle, it)
-//                })
         }
     }
+
     companion object {
         /**
          * The fragment argument representing the section number for this

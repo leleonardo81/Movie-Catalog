@@ -1,17 +1,20 @@
 package com.bangkit.moviecatalog.ui.main.all
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit.moviecatalog.R
 import com.bangkit.moviecatalog.databinding.FragmentMainBinding
 import com.bangkit.moviecatalog.ui.main.list.ListAdapter
+import com.bangkit.moviecatalog.ui.main.list.ListFooterAdapter
 import com.bangkit.moviecatalog.ui.main.viewmodel.ListViewModel
 import com.bangkit.moviecatalog.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
@@ -24,10 +27,12 @@ class PlaceholderFragment : Fragment() {
 
     private lateinit var listViewModel: ListViewModel
     private lateinit var binding: FragmentMainBinding
+    private val listAdapter = ListAdapter()
+//    private val viewModel by viewModels<ListViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        listViewModel = ViewModelProvider(this,
+        listViewModel = ViewModelProvider(requireParentFragment(),
             ViewModelFactory.getInstance(requireActivity()))[ListViewModel::class.java]
     }
 
@@ -35,56 +40,54 @@ class PlaceholderFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(layoutInflater, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (activity!=null) {
-            val listAdapter = ListAdapter()
-            val decoration = DividerItemDecoration(binding.rvListItem.context, DividerItemDecoration.VERTICAL)
+        if (activity != null) {
+            val decoration =
+                DividerItemDecoration(binding.rvListItem.context, DividerItemDecoration.VERTICAL)
             binding.rvListItem.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
                 addItemDecoration(decoration)
-                adapter = listAdapter
+                adapter = listAdapter.withLoadStateFooter(ListFooterAdapter { listAdapter.retry() } )
+
             }
 
-            listViewModel.loading.observe(viewLifecycleOwner, {
-                binding.progressBar.visibility = when (it) {
-                    true -> View.VISIBLE
-                    false -> View.GONE
-                }
-            })
+            listAdapter.addLoadStateListener { loadState ->
+                // Only show the list if refresh succeeds.
+                 when (loadState.mediator?.refresh) {
+                     is LoadState.NotLoading -> {
+                         binding.rvListItem.visibility = View.VISIBLE
+                         binding.progressBar.visibility = View.GONE
+                     }
+                     is LoadState.Loading -> {
+                         binding.progressBar.visibility = View.VISIBLE
+                         binding.rvListItem.visibility = View.GONE
+                     }
+                 }
+            }
+
             viewLifecycleOwner.lifecycleScope.launch {
-                listViewModel.fetchMovie(arguments?.getString(ARG_SECTION_TYPE) ?: resources.getString(R.string.type_movie))
+                val a = listViewModel.fetchMovie(
+                    arguments?.getString(ARG_SECTION_TYPE)
+                        ?: resources.getString(R.string.type_movie)
+                )
+                Log.d("VIEWM Launceh", a.toString())
+                        a
                     .collectLatest {
-                        listViewModel.setLoading(false)
+                        Log.d("aaa", "sadhasde")
+//                        listViewModel.setLoading(false)
                         listAdapter.submitData(it)
+                        Log.d("visibility", "OII")
                     }
             }
-
-//                .observe(viewLifecycleOwner, {
-//                    Log.d("TAG", it.data?.toString()?:"GADAAA")
-//                    it.data?.map { a->
-//                        Log.d("ISIS", a.toString())
-//                    }
-//                    when (it.status) {
-//                        Status.SUCCESS -> {
-//                            listViewModel.setLoading(false)
-//                            if (it.data!=null) listAdapter.submitData(lifecycle, it.data)
-//                        }
-//                        Status.ERROR -> {
-//                            listViewModel.setLoading(false)
-//                            Toast.makeText(context, "Failed Fetching Data", Toast.LENGTH_SHORT).show()
-//                        }
-//                        Status.LOADING -> listViewModel.setLoading(true)
-//                    }
-//                })
-
         }
     }
+
     companion object {
         /**
          * The fragment argument representing the section number for this

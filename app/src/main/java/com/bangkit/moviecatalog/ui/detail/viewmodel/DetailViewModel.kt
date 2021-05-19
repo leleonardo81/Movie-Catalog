@@ -1,6 +1,5 @@
 package com.bangkit.moviecatalog.ui.detail.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,6 @@ class DetailViewModel(private val dataRepository: DataRepository) : ViewModel() 
     fun setFavorite(state: Boolean) {
         data.value?.let {
             dataRepository.setFavorite(it, state)
-            Log.d("SET FAV", state.toString())
         }
     }
 

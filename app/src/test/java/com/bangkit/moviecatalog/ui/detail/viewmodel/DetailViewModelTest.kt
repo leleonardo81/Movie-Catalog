@@ -3,11 +3,12 @@ package com.bangkit.moviecatalog.ui.detail.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.bangkit.moviecatalog.data.source.local.entity.MovieModel
 import com.bangkit.moviecatalog.data.DataRepository
+import com.bangkit.moviecatalog.data.source.local.entity.MovieModel
 import com.bangkit.moviecatalog.utils.DataDummy
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,5 +59,32 @@ class DetailViewModelTest {
 
         viewModel.fetchData(type, id).observeForever(observer)
         Mockito.verify(observer).onChanged(detail.value)
+    }
+
+    @Test
+    fun getData() {
+        assertNull(viewModel.data.value) // initial value of data
+    }
+
+    @Test
+    fun setLoading() {
+        viewModel.setLoading(true)
+        assertNotNull(viewModel.loading)
+        assertEquals(true, viewModel.loading.value)
+    }
+
+    @Test
+    fun setData() {
+        viewModel.setData(DataDummy.getListMovie()[0])
+        assertNotNull(viewModel.data)
+        assertEquals(DataDummy.getListMovie()[0], viewModel.data.value)
+    }
+
+    @Test
+    fun setFavorite() {
+        Mockito.doNothing().`when`(dataRepository).setFavorite(any(), eq(true))
+        viewModel.setData(DataDummy.getListMovie()[0])
+        viewModel.setFavorite(true)
+        Mockito.verify(dataRepository).setFavorite(any(), eq(true))
     }
 }

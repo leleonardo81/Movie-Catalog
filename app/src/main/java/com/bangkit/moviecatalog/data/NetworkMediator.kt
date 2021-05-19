@@ -7,12 +7,11 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.bangkit.moviecatalog.data.source.local.room.MovieTvDatabase
-import com.bangkit.moviecatalog.utils.AppExecutors
 import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-abstract class NetworkMediator<ResultType : Any, RequestType>(private val mExecutors: AppExecutors) : RemoteMediator<Int, ResultType>(){
+abstract class NetworkMediator<ResultType : Any, RequestType>() : RemoteMediator<Int, ResultType>(){
 //    private val database = MovieTvDatabase.getInstance()
 
     override suspend fun initialize(): InitializeAction {
@@ -74,12 +73,15 @@ abstract class NetworkMediator<ResultType : Any, RequestType>(private val mExecu
                     getKey(lastItem)
                 }
             }
+            Log.d("kijang0", "AAA")
 
             val apiResponse = createCall()
+            Log.d("kijang1", "AAA")
 
             MovieTvDatabase.getInstance()?.withTransaction {
                 saveCallResult(apiResponse)
             }
+            Log.d("kijang2", "AAA")
 //            mExecutors.diskIO().execute {
 //                saveCallResult(apiResponse)
 //            }

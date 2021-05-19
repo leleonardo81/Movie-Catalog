@@ -16,9 +16,8 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class ListViewModelTest {
-
-    private lateinit var viewModel: ListViewModel
+class ListFavViewModelTest {
+    private lateinit var viewModel: ListFavViewModel
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -31,12 +30,13 @@ class ListViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = ListViewModel(dataRepository)
+        viewModel = ListFavViewModel(dataRepository)
+
     }
 
     @Test
     fun fetchMovie() {
-        val type = "movie"
+        val type = "tv"
         runBlocking {
             Mockito.`when`(dataRepository.getAll(type)).thenReturn(dataFlow)
             viewModel.fetchMovie(type).firstOrNull()

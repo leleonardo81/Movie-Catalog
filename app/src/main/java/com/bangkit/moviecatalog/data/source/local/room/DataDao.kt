@@ -14,7 +14,7 @@ interface DataDao {
     fun getDetail(type: String, id: Int): LiveData<MovieModel>
 
 //    @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDatas(movietvDatas: List<MovieModel>)
 
     @Update

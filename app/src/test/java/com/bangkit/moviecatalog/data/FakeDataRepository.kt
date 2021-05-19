@@ -1,81 +1,87 @@
 package com.bangkit.moviecatalog.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.bangkit.moviecatalog.BuildConfig
+import com.bangkit.moviecatalog.data.source.local.LocalDataSource
 import com.bangkit.moviecatalog.data.source.local.entity.MovieModel
 import com.bangkit.moviecatalog.data.source.remote.RemoteDataSource
 import com.bangkit.moviecatalog.data.source.remote.response.Response
-import com.bangkit.moviecatalog.data.source.remote.response.ResultsItem
-import retrofit2.Call
+import com.bangkit.moviecatalog.utils.AppExecutors
+import kotlinx.coroutines.flow.Flow
 
-class FakeDataRepository constructor(private val remoteDataSource: RemoteDataSource): DataSource {
+class FakeDataRepository constructor(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
+    private val appExecutors: AppExecutors
+): DataSource {
+    companion object {
+        const val PAGE_SIZE = 4
+    }
 
-    override fun getAll(type: String): LiveData<List<MovieModel>> {
-        val listItem = MutableLiveData<List<MovieModel>>()
-        remoteDataSource.getList(type, object : RemoteDataSource.LoadListCallback {
-            override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                if (response.isSuccessful) {
-                    val listData = response.body()?.results
-                    val newList = ArrayList<MovieModel>()
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getAll(type: String): Flow<PagingData<MovieModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false
+            ),
+            remoteMediator = object : NetworkMediator<MovieModel, Response>() {
+                override suspend fun createCall(): Response = remoteDataSource.getList(type)
+
+                override suspend fun saveCallResult(data: Response) {
+                    val listItem = ArrayList<MovieModel>()
+                    val listData = data.results
                     listData?.forEach { resultsItem -> resultsItem?.let {
-                      newList.add(
-                          MovieModel(
-                              id = it.id,
-                              name = it.title ?: it.name,
-                              desc = it.overview,
-                              voteAverage = it.voteAverage,
-                              posterUrl = BuildConfig.POSTER_PREFIX + it.posterPath,
-                              type = type
-                          )
-                      )
-                    } }
-                    listItem.postValue(newList)
-                } else {
-                    Log.e("DataRepository", "onFailure: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<Response>, t: Throwable) {
-                Log.e("DataRepository", "onFailure: ${t.message.toString()}")
-            }
-
-        })
-        return listItem
-    }
-
-    override fun getDetail(type: String, id: Int): LiveData<MovieModel> {
-        val itemDetail = MutableLiveData<MovieModel>()
-        remoteDataSource.getDetail(type, id, object : RemoteDataSource.LoadDetailCallback {
-            override fun onResponse(
-                call: Call<ResultsItem>,
-                response: retrofit2.Response<ResultsItem>
-            ) {
-                if (response.isSuccessful) {
-                    val itemResponse = response.body()
-                    itemResponse?.let {
-                        itemDetail.postValue(
+                        listItem.add(
                             MovieModel(
-                            id = it.id,
-                            name = it.title ?: it.name,
-                            desc = it.overview,
-                            voteAverage = it.voteAverage,
-                            posterUrl = BuildConfig.POSTER_PREFIX + it.posterPath,
-                            type = type
+                                id = it.id,
+                                name = it.title ?: it.name,
+                                desc = it.overview,
+                                voteAverage = it.voteAverage,
+                                posterUrl = BuildConfig.POSTER_PREFIX + it.posterPath,
+                                type = type
+                            )
                         )
-                        )
-                    }
-                } else {
-                    Log.e("DataRepository", "onFailure: ${response.message()}")
+                    } }
+                    localDataSource.insertDatas(listItem)
                 }
-            }
 
-            override fun onFailure(call: Call<ResultsItem>, t: Throwable) {
-                Log.e("DataRepository", "onFailure: ${t.message.toString()}")
-            }
+                override fun getKey(something: MovieModel): Int? = something.id
 
-        })
-        return itemDetail
+            }
+        ) { localDataSource.getList(type) }.flow
     }
+
+    override fun getDetail(type: String, id: Int): LiveData<MovieModel> = localDataSource.getDetail(type, id)
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getFavorites(type: String): Flow<PagingData<MovieModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            remoteMediator = object : NetworkMediator<MovieModel, Response>() {
+                override suspend fun createCall(): Response {
+                    /** This is Dummy Call, somehow the PagingSource
+                     *  won't update without this dummy mediator
+                     */
+                    return Response()
+                }
+
+                override suspend fun saveCallResult(data: Response) { }
+
+                override fun getKey(something: MovieModel): Int? = something.id
+            },
+            pagingSourceFactory = { localDataSource.getFavoriteList(type) }
+        ).flow
+    }
+
+    override fun setFavorite(movieModel: MovieModel, state: Boolean) =
+        appExecutors.diskIO().execute { localDataSource.setFavorite(movieModel, state) }
+
 }

@@ -24,12 +24,12 @@ class TabLayoutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentTabLayoutBinding.inflate(layoutInflater, container, false)
+        binding = FragmentTabLayoutBinding.inflate(inflater, container, false)
         arguments?.apply {
             val isFavoritePage = TabLayoutFragmentArgs.fromBundle(this).isFavoritePage
             if (isFavoritePage) binding.appName.text = resources.getString(R.string.favorite)
             val sectionsPagerAdapter =
-                SectionsPagerAdapter(this@TabLayoutFragment, isFavoritePage)
+                SectionsPagerAdapter(requireParentFragment(), isFavoritePage)
             val viewPager: ViewPager2 = binding.viewPager
             viewPager.adapter = sectionsPagerAdapter
             val tabs: TabLayout = binding.tabs

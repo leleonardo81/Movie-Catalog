@@ -76,6 +76,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:3.6.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
@@ -83,7 +84,5 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
-    implementation ("androidx.paging:paging-runtime:3.0.0") {
-        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core'
-    }
+    implementation "androidx.paging:paging-runtime:3.0.0"
 }
