@@ -35,16 +35,20 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_KEY", '"4bc5c2a2e0a5c7fa8e37dc21d80a0422"'
-            buildConfigField "String", "POSTER_PREFIX", '"https://www.themoviedb.org/t/p/w220_and_h330_face"'
-            buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
-        }
-        release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_KEY", '"4bc5c2a2e0a5c7fa8e37dc21d80a0422"'
             buildConfigField "String", "POSTER_PREFIX", '"https://www.themoviedb.org/t/p/w220_and_h330_face"'
             buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
+            buildConfigField "String", "MOVIEDB_SHA256", '"+vqZVAzTqUP8BGkfl88yU7SQ3C8J2uNEa55B7RZjEg0="'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_KEY", '"4bc5c2a2e0a5c7fa8e37dc21d80a0422"'
+            buildConfigField "String", "POSTER_PREFIX", '"https://www.themoviedb.org/t/p/w220_and_h330_face"'
+            buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
+            buildConfigField "String", "MOVIEDB_SHA256", '"+vqZVAzTqUP8BGkfl88yU7SQ3C8J2uNEa55B7RZjEg0="'
         }
     }
 
@@ -57,4 +61,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
+    implementation "androidx.sqlite:sqlite-ktx:2.1.0"
 }
