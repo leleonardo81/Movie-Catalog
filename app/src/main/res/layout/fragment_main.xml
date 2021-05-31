@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.all.PlaceholderFragment">
+    tools:context="com.bangkit.moviecatalog.main.ui.PlaceholderFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

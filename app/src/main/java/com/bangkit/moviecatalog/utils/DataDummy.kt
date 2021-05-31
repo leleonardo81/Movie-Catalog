@@ -1,8 +1,9 @@
 package com.bangkit.moviecatalog.utils
 
-import com.bangkit.moviecatalog.data.source.local.entity.MovieModel
-import com.bangkit.moviecatalog.data.source.remote.response.Response
-import com.bangkit.moviecatalog.data.source.remote.response.ResultsItem
+import com.bangkit.moviecatalog.core.data.source.local.entity.MovieEntity
+import com.bangkit.moviecatalog.core.data.source.remote.response.Response
+import com.bangkit.moviecatalog.core.data.source.remote.response.ResultsItem
+import com.bangkit.moviecatalog.core.domain.model.MovieModel
 
 
 object DataDummy {
@@ -10,7 +11,17 @@ object DataDummy {
         val listMovie = ArrayList<MovieModel>()
 
         for (i in 1..15) {
-            listMovie.add(MovieModel(1243, "movie", "/", 1.2, "Name", "aaaa"))
+            listMovie.add(MovieModel(1243, "movie", "/", 1.2, "Name", "aaaa", false))
+        }
+
+        return listMovie
+    }
+
+    fun getListMovieEntity() : List<MovieEntity> {
+        val listMovie = ArrayList<MovieEntity>()
+
+        for (i in 1..15) {
+            listMovie.add(MovieEntity(1243, "movie", "/", 1.2, "Name", "aaaa"))
         }
 
         return listMovie
