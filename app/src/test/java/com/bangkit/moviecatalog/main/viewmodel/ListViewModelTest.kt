@@ -1,11 +1,9 @@
 package com.bangkit.moviecatalog.main.viewmodel
 
 //import com.bangkit.moviecatalog.core.data.IDataRepository
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
-class ListViewModelTest {
+//@RunWith(MockitoJUnitRunner::class)
+//class ListViewModelTest {
 
 //    private lateinit var viewModel: ListViewModel
 //
@@ -32,4 +30,4 @@ class ListViewModelTest {
 //            Mockito.verify(dataRepository).getAll(type)
 //        }
 //    }
-}
+//}

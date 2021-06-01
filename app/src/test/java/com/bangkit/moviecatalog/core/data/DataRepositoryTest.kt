@@ -1,6 +1,6 @@
 package com.bangkit.moviecatalog.core.data
 
-class DataRepositoryTest {
+//class DataRepositoryTest {
 
 //    @get:Rule
 //    var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -49,4 +49,4 @@ class DataRepositoryTest {
 //        dataRepository.setFavorite(DataDummy.getListMovie()[0], true)
 //        Mockito.verify(local).setFavorite(DataDummy.getListMovieEntity()[0], true)
 //    }
-}
+//}

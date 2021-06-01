@@ -1,26 +1,24 @@
 package com.bangkit.moviecatalog.detail.viewmodel
 
 //import com.bangkit.moviecatalog.core.data.IDataRepository
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
-class DetailViewModelTest {
-
+//@RunWith(MockitoJUnitRunner::class)
+//class DetailViewModelTest {
+//
 //    private lateinit var viewModel: DetailViewModel
 //
 //    @get:Rule
 //    var instantTaskExecutorRule = InstantTaskExecutorRule()
 //
 //    @Mock
-//    private lateinit var dataRepository: IDataRepository
+//    private lateinit var dataUseCase: MovieTvUseCase
 //
 //    @Mock
 //    private lateinit var observer: Observer<MovieModel>
 //
 //    @Before
 //    fun setUp() {
-//        viewModel = DetailViewModel(dataRepository)
+//        viewModel = DetailViewModel(dataUseCase)
 //    }
 //
 //    @Test
@@ -34,18 +32,14 @@ class DetailViewModelTest {
 //    fun fetchData() {
 //        val type = "movie"
 //        val id = 1224
-//        val detail = MutableLiveData<MovieModel>()
-//        detail.value = DataDummy.getListMovie()[0]
+//        val detail = DataDummy.getListMovie()[0]
 //
-//        Mockito.`when`(dataRepository.getDetail(type, id)).thenReturn(detail)
+//        Mockito.`when`(dataUseCase.getDetail(type, id)).thenReturn(flow { emit(detail) } )
 //        val movieDetail = viewModel.fetchData(type, id)
-//        Mockito.verify(dataRepository).getDetail(type, id)
+//        Mockito.verify(dataUseCase).getDetail(type, id)
 //        assertNotNull(movieDetail)
 //        assertNotNull(movieDetail.value)
-//        assertEquals(detail.value?.name, movieDetail.value?.name)
-//
-//        viewModel.fetchData(type, id).observeForever(observer)
-//        Mockito.verify(observer).onChanged(detail.value)
+//        assertEquals(detail.name, movieDetail.value?.name)
 //    }
 //
 //    @Test
@@ -74,4 +68,4 @@ class DetailViewModelTest {
 //        viewModel.setFavorite(true)
 //        Mockito.verify(dataRepository).setFavorite(any(), eq(true))
 //    }
-}
+//}
