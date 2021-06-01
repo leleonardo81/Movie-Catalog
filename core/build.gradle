@@ -35,8 +35,6 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_KEY", '"4bc5c2a2e0a5c7fa8e37dc21d80a0422"'
             buildConfigField "String", "POSTER_PREFIX", '"https://www.themoviedb.org/t/p/w220_and_h330_face"'
             buildConfigField "String", "BASE_URL", '"https://api.themoviedb.org/3/"'
